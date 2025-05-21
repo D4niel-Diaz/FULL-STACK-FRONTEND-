@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '@/context/AppProvider';
@@ -11,7 +11,6 @@ interface FormData {
   email: string;
   password: string;
   password_confirmation?: string;
-  admin_code?: string;  // <-- added admin_code
 }
 
 const AuthPage = () => {
@@ -24,7 +23,6 @@ const AuthPage = () => {
     email: '',
     password: '',
     password_confirmation: '',
-    admin_code: '', // <-- initialize admin_code
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasRedirected, setHasRedirected] = useState(false);
@@ -63,13 +61,11 @@ const AuthPage = () => {
           setIsSubmitting(false);
           return;
         }
-        // Pass admin_code to register
         await register(
           formData.name!,
           formData.email,
           formData.password,
-          formData.password_confirmation!,
-          formData.admin_code // <-- added this param
+          formData.password_confirmation!
         );
         toast.success('Registered successfully! Please login.');
         router.push('/auth?mode=login');
@@ -108,46 +104,26 @@ const AuthPage = () => {
         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
-              <>
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <UserCircleIcon className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      className="appearance-none block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
-                      placeholder="John Doe"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                    />
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-1">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <UserCircleIcon className="h-5 w-5 text-gray-400" />
                   </div>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    className="appearance-none block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
+                    placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
                 </div>
-
-                {/* Admin Code input */}
-                <div>
-                  <label htmlFor="admin_code" className="block text-sm font-medium text-gray-200 mb-1">
-                    Admin Code (optional)
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="admin_code"
-                      name="admin_code"
-                      type="text"
-                      className="appearance-none block w-full pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
-                      placeholder="Enter admin code"
-                      value={formData.admin_code}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-              </>
+              </div>
             )}
 
             <div>
@@ -237,7 +213,7 @@ const AuthPage = () => {
               {isLogin ? "Don't have an account?" : 'Already have an account?'}
               <button
                 onClick={() =>
-                  router.push(`/auth?mode=${isLogin ? 'register' : 'login'}`)
+                  router.push(/auth?mode=${isLogin ? 'register' : 'login'})
                 }
                 disabled={isSubmitting}
                 className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition-colors duration-200"
