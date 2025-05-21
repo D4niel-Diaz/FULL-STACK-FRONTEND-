@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { AppProvider } from "@/context/AppProvider";
+import React, { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,7 +24,9 @@ export default function RootLayout({
         <AppProvider>
           <Toaster />
           <Navbar />
-          {children} 
+          <Suspense fallback={<div>Loading...</div>}>
+            {children}
+          </Suspense>
         </AppProvider>
       </body>
     </html>
