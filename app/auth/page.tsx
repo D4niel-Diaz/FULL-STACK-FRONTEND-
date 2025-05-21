@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '@/context/AppProvider';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, UserCircleIcon, LockClosedIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 
@@ -14,39 +14,39 @@ interface FormData {
 }
 
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const searchParams = useSearchParams();
+  const mode = searchParams.get('mode') === 'register' ? 'register' : 'login';
+  const isLogin = mode === 'login';
+
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: ""
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasRedirected, setHasRedirected] = useState(false); // Prevent double redirect
+  const [hasRedirected, setHasRedirected] = useState(false);
   const router = useRouter();
   const { login, register, authToken, isLoading, user } = useAppContext();
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (!hasRedirected && authToken && !isLoading && user?.role) {
       if (user.role === 'admin') {
-        router.push('/dashboard'); // Admin
+        router.push('/dashboard');
       } else {
-        router.push('/user'); // Regular user
+        router.push('/user');
       }
       setHasRedirected(true);
     }
   }, [authToken, isLoading, user?.role, hasRedirected, router]);
 
-  // Handle input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
-  // Submit login or register
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -54,7 +54,7 @@ const AuthPage = () => {
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
-        toast.success("Logged in successfully!");
+        toast.success('Logged in successfully!');
       } else {
         if (formData.password !== formData.password_confirmation) {
           toast.error("Passwords don't match!");
@@ -67,12 +67,12 @@ const AuthPage = () => {
           formData.password,
           formData.password_confirmation!
         );
-        toast.success("Registered successfully! Please login.");
-        setIsLogin(true); // Switch to login form
+        toast.success('Registered successfully! Please login.');
+        router.push('/auth?mode=login');
       }
     } catch (error: any) {
-      console.error("Authentication error:", error);
-      toast.error(error?.response?.data?.message || "Authentication failed");
+      console.error('Authentication error:', error);
+      toast.error(error?.response?.data?.message || 'Authentication failed');
     } finally {
       setIsSubmitting(false);
     }
@@ -89,20 +89,18 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo and Title */}
         <div className="text-center">
           <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
             <BookOpenIcon className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-white font-['Montserrat']">
-            {isLogin ? "Welcome back!" : "Create your account"}
+            {isLogin ? 'Welcome back!' : 'Create your account'}
           </h2>
           <p className="mt-2 text-sm text-gray-300">
-            {isLogin ? "Sign in to access your account" : "Join our library community"}
+            {isLogin ? 'Sign in to access your account' : 'Join our library community'}
           </p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
@@ -204,7 +202,7 @@ const AuthPage = () => {
                 {isSubmitting ? (
                   <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
                 ) : (
-                  isLogin ? "Sign in" : "Create Account"
+                  isLogin ? 'Sign in' : 'Create Account'
                 )}
               </button>
             </div>
@@ -212,13 +210,15 @@ const AuthPage = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-300">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() =>
+                  router.push(`/auth?mode=${isLogin ? 'register' : 'login'}`)
+                }
                 disabled={isSubmitting}
                 className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition-colors duration-200"
               >
-                {isLogin ? "Sign up" : "Sign in"}
+                {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </p>
           </div>
