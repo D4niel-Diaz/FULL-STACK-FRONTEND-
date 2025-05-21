@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '@/context/AppProvider';
@@ -213,7 +213,7 @@ const AuthPage = () => {
               {isLogin ? "Don't have an account?" : 'Already have an account?'}
               <button
                 onClick={() =>
-                  router.push(/auth?mode=${isLogin ? 'register' : 'login'})
+                  router.push(`/auth?mode=${isLogin ? 'register' : 'login'}`)
                 }
                 disabled={isSubmitting}
                 className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition-colors duration-200"
