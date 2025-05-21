@@ -11,7 +11,6 @@ interface FormData {
   email: string;
   password: string;
   password_confirmation?: string;
-  role?: 'user' | 'admin';
 }
 
 const AuthPage = () => {
@@ -24,7 +23,6 @@ const AuthPage = () => {
     email: '',
     password: '',
     password_confirmation: '',
-    role: 'user',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasRedirected, setHasRedirected] = useState(false);
@@ -34,28 +32,19 @@ const AuthPage = () => {
   useEffect(() => {
     if (!hasRedirected && authToken && !isLoading && user?.role) {
       if (user.role === 'admin') {
-        router.push('/admin/dashboard');  // Admin route
+        router.push('/dashboard');
       } else {
-        router.push('/user');             // User route
+        router.push('/user');
       }
       setHasRedirected(true);
     }
   }, [authToken, isLoading, user?.role, hasRedirected, router]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = event.target;
-
-    if (name === 'isAdmin') {
-      setFormData(prev => ({
-        ...prev,
-        role: checked ? 'admin' : 'user',
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -76,8 +65,7 @@ const AuthPage = () => {
           formData.name!,
           formData.email,
           formData.password,
-          formData.password_confirmation!,
-          formData.role || 'user'  // Pass role to register
+          formData.password_confirmation!
         );
         toast.success('Registered successfully! Please login.');
         router.push('/auth?mode=login');
@@ -116,42 +104,26 @@ const AuthPage = () => {
         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
-              <>
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <UserCircleIcon className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      className="appearance-none block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
-                      placeholder="John Doe"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                    />
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-1">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <UserCircleIcon className="h-5 w-5 text-gray-400" />
                   </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
                   <input
-                    type="checkbox"
-                    id="isAdmin"
-                    name="isAdmin"
-                    checked={formData.role === 'admin'}
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    className="appearance-none block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
+                    placeholder="John Doe"
+                    value={formData.name}
                     onChange={handleInputChange}
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <label htmlFor="isAdmin" className="block text-sm text-gray-200">
-                    Register as Admin
-                  </label>
                 </div>
-              </>
+              </div>
             )}
 
             <div>
@@ -225,30 +197,31 @@ const AuthPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
               >
-                {isSubmitting ? (isLogin ? 'Logging in...' : 'Registering...') : (isLogin ? 'Log In' : 'Register')}
+                {isSubmitting ? (
+                  <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                ) : (
+                  isLogin ? 'Sign in' : 'Create Account'
+                )}
               </button>
             </div>
           </form>
 
-          <p className="mt-4 text-center text-gray-400">
-            {isLogin ? (
-              <>
-                Don&apos;t have an account?{' '}
-                <a href="/auth?mode=register" className="text-indigo-400 hover:underline">
-                  Register
-                </a>
-              </>
-            ) : (
-              <>
-                Already have an account?{' '}
-                <a href="/auth?mode=login" className="text-indigo-400 hover:underline">
-                  Log in
-                </a>
-              </>
-            )}
-          </p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-300">
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}
+              <button
+                onClick={() =>
+                  router.push(/auth?mode=${isLogin ? 'register' : 'login'})
+                }
+                disabled={isSubmitting}
+                className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition-colors duration-200"
+              >
+                {isLogin ? 'Sign up' : 'Sign in'}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
