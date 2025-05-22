@@ -85,7 +85,7 @@ const AuthPage = () => {
       </div>
     );
   }
-
+    // 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -207,7 +207,7 @@ const AuthPage = () => {
               </button>
             </div>
           </form>
-
+            // function
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-300">
               {isLogin ? "Don't have an account?" : 'Already have an account?'}
