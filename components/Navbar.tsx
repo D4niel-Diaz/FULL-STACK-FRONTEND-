@@ -11,7 +11,7 @@ import {
   UserCircleIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
-
+//
 const Navbar = () => {
   const { logout, authToken, user, isLoading } = useAppContext();
   const router = useRouter();
