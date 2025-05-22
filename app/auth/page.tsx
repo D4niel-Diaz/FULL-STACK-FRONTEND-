@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, UserCircleIcon, LockClosedIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
-
+//
 interface FormData {
   name?: string;
   email: string;
