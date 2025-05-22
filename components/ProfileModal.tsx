@@ -16,7 +16,7 @@ interface ProfileModalProps {
     role: string;
   } | null;
 }
-
+//
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) => {
   const { authToken, updateUser } = useAppContext();
   const [loading, setLoading] = useState(false);
