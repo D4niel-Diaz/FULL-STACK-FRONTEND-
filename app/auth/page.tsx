@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { BookOpenIcon, UserCircleIcon, LockClosedIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
-//
+
 interface FormData {
   name?: string;
   email: string;
@@ -213,7 +213,7 @@ const AuthPage = () => {
               {isLogin ? "Don't have an account?" : 'Already have an account?'}
               <button
                 onClick={() =>
-                  router.push(/auth?mode=${isLogin ? 'register' : 'login'})
+                  router.push(`/auth?mode=${isLogin ? 'register' : 'login'}`)
                 }
                 disabled={isSubmitting}
                 className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition-colors duration-200"
