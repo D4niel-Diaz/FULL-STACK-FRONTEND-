@@ -89,7 +89,7 @@ interface DashboardStats {
     status: string;
   }[];
 }
-
+// Admiin dashboard
 const AdminDashboard: React.FC = () => {
   const { authToken, user, isLoading } = useAppContext();
   const router = useRouter();
