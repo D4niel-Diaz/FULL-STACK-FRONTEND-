@@ -23,7 +23,7 @@ interface AppContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, password_confirmation: string) => Promise<void>;
+  register: (name: string, email: string, password: string, password_confirmation: string, role: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   updateUser: (userData: User) => void;
@@ -135,7 +135,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const register = async (name: string, email: string, password: string, password_confirmation: string) => {
+  const register = async (name: string, email: string, password: string, password_confirmation: string, role: string) => {
     setIsLoading(true);
     try {
       await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sanctum/csrf-cookie`, {
@@ -144,7 +144,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`, 
-        { name, email, password, password_confirmation },
+        { name, email, password, password_confirmation, role },
         {
           headers: { Accept: 'application/json' },
           withCredentials: true
