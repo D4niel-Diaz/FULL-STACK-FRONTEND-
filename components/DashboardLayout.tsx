@@ -5,7 +5,7 @@ interface DashboardLayoutProps {
   title?: string;
   subtitle?: string;
 }
-
+//
 export default function DashboardLayout({ children, title, subtitle }: DashboardLayoutProps) {
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
