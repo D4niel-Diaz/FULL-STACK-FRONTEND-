@@ -3,7 +3,7 @@
 import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { AppProvider } from "@/context/AppProvider";
-
+//
 export default function ClientLayout({
   children,
 }: {
